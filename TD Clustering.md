@@ -59,8 +59,11 @@ Jeu de données :
 M1(−2, 3), M2(−2, 1), M3(−2, −1), M4(2, −1), M5(2, 1), M6(1, 0)
 
 (a) Avec centroïdes initiaux M1 et M2:
-![[Pasted image 20251107064426.png|320x300]] ![[Pasted image 20251107064700.png|320x300]]
-![[Pasted image 20251107064822.png|320x300]]
+<p align="center">
+  <img src="image-2.png" width="300">
+  <img src="image-3.png" width="300">
+  <img src="image-4.png" width="300">
+</p>
 
 
 ```
@@ -90,8 +93,12 @@ Les centroïdes finaux `[-2.0, 2.0]` et `[0.75, -0.25]`
 
 (b) Avec centroïdes initiaux M4 et M6:
 
-![[Pasted image 20251107065343.png|320x300]] ![[Pasted image 20251107065441.png|320x300]]
-![[Pasted image 20251107065519.png|320x300]]
+<p align="center">
+  <img src="image-5.png" width="300">
+  <img src="image-6.png" width="300">
+  <img src="image-7.png" width="300">
+</p>
+
 ```
 points=[[-2,3],[-2,1],[-2,-1],[2,-1],[2,1],[1,0]]
 names=["M1","M2","M3","M4","M5","M6"]
@@ -167,3 +174,27 @@ Cas (a) : clusters {M1,M2} et {M3,M4,M5,M6} (comme notre implémentation).
 Cas (b) : clusters {M1,M2,M3} et {M4,M5,M6} (comme notre implémentation).
 
 **Conclusion** — Pour 1.1, 1.2 et 1.3, sklearn.KMeans retrouve les mêmes partitions que notre code (à permutation des labels près), validant l’implémentation.
+
+
+## 2 Clustering Hiérachie
+## 2.1 Clustering hiérarchique à partir d’une matrice de distance
+Encodage au format 1D : `data = [0.1, 0.9, 0.35, 0.8, 0.3, 0.4, 0.5, 0.6, 0.7, 0.2]`
+
+Le code d’exécution est disponible dans le fichier `hierarchy.py`.
+
+<p align="center">
+  <img src="image.png" width="300">
+  <img src="image-1.png" width="300">
+</p>
+
+## 2.2 Clustering hiérarchique à partir d’une matrice de similarité
+
+Conversion en distance :  
+`distance(pᵢ, pⱼ) = 1 - similarité(pᵢ, pⱼ)`
+
+Le code d’exécution est dans le fichier `similarity.py`.
+
+<p align="center">
+  <img src="image-8.png" width="320">
+  <img src="image-9.png" width="320">
+</p>
