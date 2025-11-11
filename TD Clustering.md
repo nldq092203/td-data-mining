@@ -236,11 +236,11 @@ plot_kmeans_with_labels(data_reduced, centroids_2, clusters_2, country_names, k=
 </p>
 
 **Interprétation** :  
-Séparation en deux groupes selon le niveau de développement :
-- **Cluster rouge** : pays développés (Europe, Les États-Unis, Australie, Japon)
-- **Cluster vert** : pays en développement (Afrique, Asie du Sud)
+Les 167 pays se répartissent clairement en deux groupes selon leur niveau de développement socio-économique :
+- **Cluster rouge (89 pays)** : pays à développement élevé ou économies émergentes à revenu intermédiaire supérieur (Europe occidentale et nordique, États-Unis, Canada, Australie, Japon, Corée du Sud, Singapour, etc.).
+- **Cluster vert  (78 pays)** : pays en développement ou à faible revenu (principalement Afrique subsaharienne, Asie du Sud et quelques pays d’Asie du Sud-Est).
+Les proximités sont cohérentes (pays scandinaves regroupés, pays africains proches) et on observe aussi des rapprochements intéressants entre pays éloignés géographiquement mais similaires économiquement.
 
-On observe des proximités cohérentes (pays scandinaves ensemble, pays africains ensemble) et quelques surprises (pays géographiquement éloignés mais économiquement similaires).
 
 **K-means avec k=3**
 
@@ -255,13 +255,12 @@ plot_kmeans_with_labels(data_reduced, centroids_3, clusters_3, country_names, k=
 </p>
 
 **Interprétation** :  
-Trois niveaux de développement :
-- **Cluster bleu** : très haut niveau (Europe, Les États-Unis)
-- **Cluster rouge** : niveau intermédiaire (Europe de l'Est, Amérique latine)
-- **Cluster vert** : faible niveau (Afrique, Asie du Sud)
+Le passage à trois centres révèle trois niveaux de développement distincts, tout en conservant des frontières similaires :
+- **Cluster bleu (41 pays)** : très haut niveau de développement (Europe occidentale et nordique, Amérique du Nord, Australie, Japon, Singapour, Luxembourg, etc.).
+- **Cluster rouge (78 pays)** : niveau intermédiaire ou économies émergentes (Europe de l’Est, Amérique latine, Moyen-Orient riche en hydrocarbures, une partie de l’Asie du Sud-Est).
+- **Cluster vert (48 pays)** : faible niveau de développement (grande majorité des pays d’Afrique subsaharienne et quelques pays d’Asie du Sud).
 
-L'erreur SSE diminue significativement (503.02 → 371.03), indiquant une meilleure cohérence interne.
-
+La SSE passe de 503,02 (k=2) à 371,03 (k=3), signe d’une meilleure cohérence interne malgré quelques pays "frontières" qui changent de groupe selon les initialisations.
 **Discussion sur l'initialisation** :  
 La structure naturelle des données étant marquée, plusieurs exécutions avec centroïdes aléatoires donnent des résultats similaires. Quelques pays "frontières" peuvent changer de cluster, mais les SSE restent cohérents.
 
@@ -279,7 +278,8 @@ hierarchical_clustering(data_reduced, country_names, method='single',
 </p>
 
 **Interprétation** :  
-Structure allongée avec effet de "chaînage". Formation d'un grand cluster dominant qui absorbe progressivement les pays. Moins adapté pour obtenir des groupes bien distincts.
+ Le dendrogramme (`country_data_single_link.png`) montre un enchaînement très progressif : toutes les fusions restent sous la distance 0,5 jusqu’à ce que presque tous les pays soient regroupés. Même en coupant à distance 1, on n’obtient que deux blocs (Luxembourg/Singapour d’un côté, tout le reste de l’autre), ce qui illustre l’effet de « chaînage » : chaque nouveau pays se rattache au cluster existant dès qu’un voisin est proche, rendant l’extraction de groupes stables très délicate. Ce mode de liaison peut néanmoins révéler des chaînes géographiques ou économiques (par exemple une suite de pays africains voisins), mais il n’est pas adapté ici pour différencier les niveaux de développement.
+
 
 **Complete Link**
 
@@ -293,22 +293,17 @@ hierarchical_clustering(data_reduced, country_names, method='complete',
 </p>
 
 **Interprétation** :  
-Structure plus équilibrée avec plusieurs branches bien distinctes. Clusters plus compacts et homogènes. À hauteur ~4-5, on identifie 3-4 clusters correspondant aux résultats k-means.
+Avec la liaison complète (`country_data_complete_link.png`), la hiérarchie est plus équilibrée : trois grandes branches émergent entre les distances 4 et 5. En coupant le dendrogramme autour de 4,5, on retrouve quasiment les trois clusters de k-means : à gauche les pays à faible revenu (Afrique subsaharienne, Asie du Sud), au centre les économies intermédiaires/émergentes, à droite les pays développés (Europe/OCDE, Amérique du Nord, Australie, Japon). Cette correspondance directe avec l’analyse socio-économique justifie la préférence pour le complete link sur ce jeu de données.
 
-**Comparaison** : Complete link est préférable pour ce jeu de données car il produit des groupes plus cohérents et équilibrés.
+
+**Comparaison.** Le complete link offre donc des groupes plus cohérents pour ce jeu de données, tandis que le single link reste utile surtout pour repérer des chaînes locales.
 
 ### 3.4 Interprétation et discussion
 
-**Proximités attendues** :
-- Pays scandinaves (Norvège, Suède, Danemark, Finlande)
-- Pays d'Europe occidentale (France, Allemagne, Royaume-Uni)  
-- Pays d'Afrique subsaharienne (Niger, Mali, Tchad)
+**Proximités attendues** : pays scandinaves (Norvège, Suède, Danemark, Finlande), Europe occidentale (France, Allemagne, Royaume-Uni), Afrique subsaharienne (Niger, Mali, Tchad).
 
-**Proximités surprenantes** :
-- Pays asiatiques développés (Corée du Sud, Singapour) proches des pays européens développés
-- Pays géographiquement éloignés mais économiquement similaires (Chili avec Europe de l'Est)
-- Pays du Moyen-Orient dans des clusters différents malgré leur proximité géographique
+**Proximités surprenantes** : économies asiatiques avancées (Corée du Sud, Singapour) se rapprochant des pays européens développés ; certains pays d’Amérique latine (Chili, Uruguay) alignés avec l’Europe de l’Est ; pays du Moyen-Orient répartis dans différents clusters selon leurs indicateurs économiques.
 
-**Conclusion** : Les clusterings obtenus (k-means et hiérarchique) sont cohérents entre eux et reflètent principalement les niveaux de développement économique et social plutôt que la géographie.
+**Conclusion** : Les clusterings k-means et hiérarchiques convergent vers une structure dictée par le degré de développement socio-économique plutôt que par la géographie.
 
 ````
