@@ -34,7 +34,7 @@ def plot_clusters(data, centroids, clusters, names=None, iteration=None):
     plt.show()
 
 
-def kmeans_2d(data, k, centroids_init=None, names=None, max_iter=10, visualize=True):
+def kmeans_2d(data, k, centroids_init=None, names=None, max_iter=10, visualize=True, verbose=True):
     if centroids_init is None:
         centroids = random.sample(data, k)
     else:
@@ -47,9 +47,10 @@ def kmeans_2d(data, k, centroids_init=None, names=None, max_iter=10, visualize=T
             cluster_index = np.argmin(distances)
             clusters[cluster_index].append(point)
 
-        print(f"\nIteration {it}")
-        for i, cluster in enumerate(clusters):
-            print(f"Centroid {centroids[i]} Points {cluster}")
+        if verbose:
+            print(f"\nIteration {it}")
+            for i, cluster in enumerate(clusters):
+                print(f"Centroid {centroids[i]} Points {cluster}")
 
         if visualize:
             plot_clusters(data, centroids, clusters, names, iteration=it)
@@ -73,11 +74,12 @@ def kmeans_2d(data, k, centroids_init=None, names=None, max_iter=10, visualize=T
     return centroids, clusters, sse
 
 
-points = [[-2, 3], [-2, 1], [-2, -1], [2, -1], [2, 1], [1, 0]]
-names = ["M1", "M2", "M3", "M4", "M5", "M6"]
+if __name__ == "__main__":
+    points = [[-2, 3], [-2, 1], [-2, -1], [2, -1], [2, 1], [1, 0]]
+    names = ["M1", "M2", "M3", "M4", "M5", "M6"]
 
-print("=== Cas (a): M1 et M2 ===")
-kmeans_2d(points, k=2, centroids_init=[[-2, 3], [-2, 1]], names=names, visualize=True)
+    print("=== Cas (a): M1 et M2 ===")
+    kmeans_2d(points, k=2, centroids_init=[[-2, 3], [-2, 1]], names=names, visualize=True)
 
-print("=== Cas (b): M4 et M6 ===")
-kmeans_2d(points, k=2, centroids_init=[[2, -1], [1, 0]], names=names, visualize=True)
+    print("=== Cas (b): M4 et M6 ===")
+    kmeans_2d(points, k=2, centroids_init=[[2, -1], [1, 0]], names=names, visualize=True)

@@ -198,3 +198,121 @@ Le code d’exécution est dans le fichier `similarity.py`.
   <img src="image-8.png" width="320">
   <img src="image-9.png" width="320">
 </p>
+
+
+## 3 Étude de cas
+
+### 3.1 Préparation des données
+
+Parsing du fichier `Country-data.csv` et application de PCA sur données centrées réduites :
+
+```python
+data_country, country_names = parse_country_data('Country-data.csv')
+data_reduced = pca_reduction(data_country, country_names)
+```
+
+Résultat obtenu :
+```
+First country: Afghanistan
+Data: [90.2, 10.0, 7.58, 44.9, 1610.0, 9.44, 56.2, 5.82, 553.0]
+
+data_reduced commence par: [[2.91, -0.10], [-0.43, 0.59], ...]
+```
+
+Code disponible dans `etude_de_cas.py`.
+
+### 3.2 Clustering K-means
+
+**K-means avec k=2**
+
+```python
+centroids_2, clusters_2, sse_2 = kmeans_2d(data_reduced, k=2, max_iter=100, visualize=False)
+plot_kmeans_with_labels(data_reduced, centroids_2, clusters_2, country_names, k=2, 
+                       filename='country_data_k2.png')
+```
+
+<p align="center">
+  <img src="country_data_k2.png" width="600">
+</p>
+
+**Résultats** : 91 pays (rouge), 76 pays (vert), SSE = 503.02 (9 itérations)
+
+**Interprétation** :  
+Séparation en deux groupes selon le niveau de développement :
+- **Cluster rouge** : pays développés (Europe occidentale, Amérique du Nord, Australie, Japon) + pays émergents d'Asie
+- **Cluster vert** : pays en développement (Afrique subsaharienne, Asie du Sud)
+
+On observe des proximités cohérentes (pays scandinaves ensemble, pays africains ensemble) et quelques surprises (pays géographiquement éloignés mais économiquement similaires).
+
+**K-means avec k=3**
+
+```python
+centroids_3, clusters_3, sse_3 = kmeans_2d(data_reduced, k=3, max_iter=100, visualize=False)
+plot_kmeans_with_labels(data_reduced, centroids_3, clusters_3, country_names, k=3,
+                       filename='country_data_k3.png')
+```
+
+<p align="center">
+  <img src="country_data_k3.png" width="600">
+</p>
+
+**Résultats** : 45 pays (rouge), 81 pays (vert), 41 pays (bleu), SSE = 371.03 (9 itérations)
+
+**Interprétation** :  
+Trois niveaux de développement :
+- **Cluster rouge** : très haut niveau (Europe, Amérique du Nord, Océanie)
+- **Cluster vert** : niveau intermédiaire (pays émergents, Europe de l'Est, Amérique latine)  
+- **Cluster bleu** : faible niveau (Afrique subsaharienne, Asie du Sud)
+
+L'erreur SSE diminue significativement (503.02 → 371.03), indiquant une meilleure cohérence interne.
+
+**Discussion sur l'initialisation** :  
+La structure naturelle des données étant marquée, plusieurs exécutions avec centroïdes aléatoires donnent des résultats similaires. Quelques pays "frontières" peuvent changer de cluster, mais les SSE restent cohérents.
+
+### 3.3 Clustering hiérarchique
+
+**Single Link**
+
+```python
+hierarchical_clustering(data_reduced, country_names, method='single', 
+                       filename='country_data_single_link.png')
+```
+
+<p align="center">
+  <img src="country_data_single_link.png" width="700">
+</p>
+
+**Interprétation** :  
+Structure allongée avec effet de "chaînage". Formation d'un grand cluster dominant qui absorbe progressivement les pays. Moins adapté pour obtenir des groupes bien distincts.
+
+**Complete Link**
+
+```python
+hierarchical_clustering(data_reduced, country_names, method='complete',
+                       filename='country_data_complete_link.png')
+```
+
+<p align="center">
+  <img src="country_data_complete_link.png" width="700">
+</p>
+
+**Interprétation** :  
+Structure plus équilibrée avec plusieurs branches bien distinctes. Clusters plus compacts et homogènes. À hauteur ~4-5, on identifie 3-4 clusters correspondant aux résultats k-means.
+
+**Comparaison** : Complete link est préférable pour ce jeu de données car il produit des groupes plus cohérents et équilibrés.
+
+### 3.4 Interprétation et discussion
+
+**Proximités attendues** :
+- Pays scandinaves (Norvège, Suède, Danemark, Finlande)
+- Pays d'Europe occidentale (France, Allemagne, Royaume-Uni)  
+- Pays d'Afrique subsaharienne (Niger, Mali, Tchad)
+
+**Proximités surprenantes** :
+- Pays asiatiques développés (Corée du Sud, Singapour) proches des pays européens développés
+- Pays géographiquement éloignés mais économiquement similaires (Chili avec Europe de l'Est)
+- Pays du Moyen-Orient dans des clusters différents malgré leur proximité géographique
+
+**Conclusion** : Les clusterings obtenus (k-means et hiérarchique) sont cohérents entre eux et reflètent principalement les niveaux de développement économique et social plutôt que la géographie.
+
+````
