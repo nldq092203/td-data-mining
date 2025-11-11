@@ -256,9 +256,9 @@ plot_kmeans_with_labels(data_reduced, centroids_3, clusters_3, country_names, k=
 
 **Interprétation** :  
 Le passage à trois centres révèle trois niveaux de développement distincts, tout en conservant des frontières similaires :
-- **Cluster bleu (41 pays)** : très haut niveau de développement (Europe occidentale et nordique, Amérique du Nord, Australie, Japon, Singapour, Luxembourg, etc.).
+- **Cluster bleu (48 pays)** : très haut niveau de développement (Europe occidentale et nordique, Amérique du Nord, Australie, Japon, Singapour, Luxembourg, etc.).
 - **Cluster rouge (78 pays)** : niveau intermédiaire ou économies émergentes (Europe de l’Est, Amérique latine, Moyen-Orient riche en hydrocarbures, une partie de l’Asie du Sud-Est).
-- **Cluster vert (48 pays)** : faible niveau de développement (grande majorité des pays d’Afrique subsaharienne et quelques pays d’Asie du Sud).
+- **Cluster vert (41 pays)** : faible niveau de développement (grande majorité des pays d’Afrique subsaharienne et quelques pays d’Asie du Sud).
 
 La SSE passe de 503,02 (k=2) à 371,03 (k=3), signe d’une meilleure cohérence interne malgré quelques pays "frontières" qui changent de groupe selon les initialisations.
 **Discussion sur l'initialisation** :  
@@ -305,5 +305,3 @@ Avec la liaison complète (`country_data_complete_link.png`), la hiérarchie est
 **Proximités surprenantes** : économies asiatiques avancées (Corée du Sud, Singapour) se rapprochant des pays européens développés ; certains pays d’Amérique latine (Chili, Uruguay) alignés avec l’Europe de l’Est ; pays du Moyen-Orient répartis dans différents clusters selon leurs indicateurs économiques.
 
 **Conclusion** : Les clusterings k-means et hiérarchiques convergent vers une structure dictée par le degré de développement socio-économique plutôt que par la géographie.
-
-````
