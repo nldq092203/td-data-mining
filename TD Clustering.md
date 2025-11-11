@@ -235,12 +235,10 @@ plot_kmeans_with_labels(data_reduced, centroids_2, clusters_2, country_names, k=
   <img src="country_data_k2.png" width="600">
 </p>
 
-**Résultats** : 91 pays (rouge), 76 pays (vert), SSE = 503.02 (9 itérations)
-
 **Interprétation** :  
 Séparation en deux groupes selon le niveau de développement :
-- **Cluster rouge** : pays développés (Europe occidentale, Amérique du Nord, Australie, Japon) + pays émergents d'Asie
-- **Cluster vert** : pays en développement (Afrique subsaharienne, Asie du Sud)
+- **Cluster rouge** : pays développés (Europe, Les États-Unis, Australie, Japon)
+- **Cluster vert** : pays en développement (Afrique, Asie du Sud)
 
 On observe des proximités cohérentes (pays scandinaves ensemble, pays africains ensemble) et quelques surprises (pays géographiquement éloignés mais économiquement similaires).
 
@@ -256,13 +254,11 @@ plot_kmeans_with_labels(data_reduced, centroids_3, clusters_3, country_names, k=
   <img src="country_data_k3.png" width="600">
 </p>
 
-**Résultats** : 45 pays (rouge), 81 pays (vert), 41 pays (bleu), SSE = 371.03 (9 itérations)
-
 **Interprétation** :  
 Trois niveaux de développement :
-- **Cluster rouge** : très haut niveau (Europe, Amérique du Nord, Océanie)
-- **Cluster vert** : niveau intermédiaire (pays émergents, Europe de l'Est, Amérique latine)  
-- **Cluster bleu** : faible niveau (Afrique subsaharienne, Asie du Sud)
+- **Cluster bleu** : très haut niveau (Europe, Les États-Unis)
+- **Cluster rouge** : niveau intermédiaire (Europe de l'Est, Amérique latine)
+- **Cluster vert** : faible niveau (Afrique, Asie du Sud)
 
 L'erreur SSE diminue significativement (503.02 → 371.03), indiquant une meilleure cohérence interne.
 
