@@ -202,6 +202,12 @@ Le code d’exécution est dans le fichier `similarity.py`.
 
 ## 3 Étude de cas
 
+**Exécution** : Pour reproduire tous les résultats de cette section, exécuter :
+```bash
+python ./etude_de_cas.py
+```
+Cela générera les 4 figures : `country_data_k2.png`, `country_data_k3.png`, `country_data_single_link.png`, `country_data_complete_link.png`.
+
 ### 3.1 Préparation des données
 
 Parsing du fichier `Country-data.csv` et application de PCA sur données centrées réduites :
@@ -261,6 +267,7 @@ Le passage à trois centres révèle trois niveaux de développement distincts, 
 - **Cluster vert (41 pays)** : faible niveau de développement (grande majorité des pays d’Afrique subsaharienne et quelques pays d’Asie du Sud).
 
 La SSE passe de 503,02 (k=2) à 371,03 (k=3), signe d’une meilleure cohérence interne malgré quelques pays "frontières" qui changent de groupe selon les initialisations.
+
 **Discussion sur l'initialisation** :  
 La structure naturelle des données étant marquée, plusieurs exécutions avec centroïdes aléatoires donnent des résultats similaires. Quelques pays "frontières" peuvent changer de cluster, mais les SSE restent cohérents.
 

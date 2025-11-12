@@ -118,14 +118,13 @@ def plot_kmeans_with_labels(data, centroids, clusters, country_names, k, filenam
 def hierarchical_clustering(data, country_names, method='single', filename=None):
     Z = linkage(data, method=method)
     
-    plt.figure(figsize=(20, 10))
-    dendrogram(Z, labels=country_names, leaf_font_size=7)
+    plt.figure(figsize=(20, 20))
+    dendrogram(Z, labels=country_names, leaf_font_size=7, orientation='right')
     
     method_name = "Simple (Single Link)" if method == 'single' else "Complète (Complete Link)"
     plt.title(f"Clustering Hiérarchique - Liaison {method_name}", fontsize=14, fontweight='bold')
-    plt.xlabel("Pays", fontsize=12)
-    plt.ylabel("Distance", fontsize=12)
-    plt.xticks(rotation=90)
+    plt.xlabel("Distance", fontsize=12)
+    plt.ylabel("Pays", fontsize=12)
     plt.tight_layout()
     
     if filename:
