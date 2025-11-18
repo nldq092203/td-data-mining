@@ -141,35 +141,29 @@ Notre implémentation Apriori reste plus lente que MLxtend mais stable et linéa
 Les résultats varient selon la densité des transactions :
 
 - Scénario 1 (2000 items, largeur 10–300) :
-    - Transactions peu denses alors très peu d’items par transaction.
-    - Apriori : peu de candidats 
-    - FP-Growth : FP-tree peu compressé ( parce que FP-tree efficace uniquement si co-occurrences élevées).
-    Donc, Apriori plus rapide, Spark pénalisé par un FP-tree peu utile.
+    - Les transactions sont peu denses, avec peu d’items présents par ligne.
+    - Apriori génère donc peu de candidats, ce qui limite fortement le coût (propriété : explosion uniquement lorsque les co-occurrences sont élevées).
+    - Spark (FP-Growth) ne parvient pas à compresser le FP-tree, car la faible co-occurrence ne permet pas de regrouper les patterns (le FP-tree n’est efficace que sur données denses).
+    Donc, Apriori est plus rapide que Spark, FP-Growth n’ayant pas d’avantage structurel dans ce contexte.
 
 - Scénario 1.2 (2000 items, largeur 1–10) :
-    - Transactions très clairsemées alors co-occurrence très faible.
-    - Apriori : quasi pas de candidats, exécution immédiate.
-    - FP-Growth : FP-tree très petit, donc coût réduit mais pas de compression significative.
-    Donc, Spark se rapproche, mais Apriori reste devant car FP-tree n’apporte toujours pas d’avantage.
+    - Les transactions sont très clairsemées : très peu d’items apparaissent ensemble.
+    - Apriori : génère donc très peu de candidats, ce qui limite son coût et produit une croissance linéaire.
+    - Spark (FP-Growth) construit un FP-tree très petit, presque sans motifs répétés alors peu de compression possible.
+    - Le coût de Spark reste presque constant, car le FP-tree est simple à parcourir.
+    Donc, Apriori reste plus rapide, mais l’écart avec Spark est beaucoup plus faible que dans le scénario précédent. Spark progresse lentement mais de façon stable, ce qui lui permet de se rapprocher progressivement d’Apriori lorsque le nombre de transactions augmente.
 
 - Scénario 2 (7000 items, largeur 50–60) :
-    - Transactions denses alors beaucoup d’items apparaissent ensemble.
+  - Transactions modérément denses, avec de nombreuses co-occurrences répétées.
 
-    - Apriori : explosion de candidats (theoretical weakness du modèle Apriori).
+  - Apriori subit une explosion de candidats et plusieurs scans de la base, ce qui augmente fortement le coût.
 
-    - FP-Growth : FP-tree fortement compressé (theoretical strength : compression et pas de génération de candidats).
-    Et le nombre de items est élevé.
-    Donc, Spark devient plus rapide grâce à FP-Growth adapté aux données denses.
+  - FP-Growth obtient un FP-tree bien compressé, adapté à ce type de données.
+  Donc, Spark devient nettement plus rapide, car la densité permet enfin à FP-Growth de fonctionner dans des conditions optimales.
 
-**Discussion**:
+**Discussion**
+- Apriori (notre implémentation) convient aux données petites ou très clairsemées, et pour comprendre le fonctionnement interne de l’algorithme.
 
-L’implémentation à choisir dépend fortement du contexte et de la taille des données :
+- MLxtend est la meilleure option sur une machine unique, rapide et optimisée pour des données petites à moyennes.
 
-Notre implémentation Apriori
-Convient pour les jeux de données petits ou clairsemés et lorsqu’on souhaite étudier, comprendre ou modifier le fonctionnement interne de l’algorithme.
-
-MLxtend (centralisée)
-Idéal pour un usage local, sur une seule machine, lorsque les données sont petites à moyennes et qu’on recherche la meilleure performance sans surcharge. C’est la solution la plus efficace dans la plupart des cas pratiques non distribués.
-
-Spark MLlib (distribuée)
-Pertinent seulement quand les données deviennent très volumineuses ou denses, ou lorsqu’on dispose d’un cluster. FP-Growth exploite alors mieux la structure du dataset et offre un passage à l’échelle que les implémentations centralisées ne peuvent pas atteindre.
+- Spark MLlib (FP-Growth) devient pertinent lorsque les données sont volumineuses ou denses ; le coût d’initialisation est compensé par l’efficacité du FP-tree sur de grands volumes. FP-Growth devient alors nettement plus efficace qu’Apriori.

@@ -1,14 +1,14 @@
 import random
 import time
+
+import matplotlib.pyplot as plt
+from mlxtend.frequent_patterns import apriori
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-
-from mlxtend.frequent_patterns import apriori
-from apriori import frequent_itemsets_gen
-
-from pyspark.sql import SparkSession
 from pyspark.ml.fpm import FPGrowth
+from pyspark.sql import SparkSession
+
+from exo1.apriori import apriori_frequent_itemsets
 
 
 def generate_synthetic_transactions(n_transactions, n_items, min_width, max_width):
@@ -29,7 +29,7 @@ def generate_synthetic_transactions(n_transactions, n_items, min_width, max_widt
 # =========================================================
 def run_my_apriori(transactions):
     start = time.time()
-    frequent_itemsets_gen(transactions, minsup=0.3, method="Fk-1xFk-1", verbose=False)
+    apriori_frequent_itemsets(transactions, minsup=0.3, method="fk1_fk1", verbose=False)
     return time.time() - start
 
 
@@ -133,7 +133,7 @@ def scenario1():
         n_items=2000,
         min_width=10,
         max_width=300,
-        filename="./static/scenario1.png",
+        filename="../static/scenario1.png",
     )
 
 
@@ -143,7 +143,7 @@ def scenario1_2():
         n_items=2000,
         min_width=1,
         max_width=10,
-        filename="./static/scenario2.png",
+        filename="../static/scenario2.png",
     )
 
 
@@ -153,9 +153,10 @@ def scenario2():
         n_items=7000,
         min_width=50,
         max_width=60,
-        filename="./static/scenario3.png",
+        filename="../static/scenario3.png",
     )
 
 
+scenario1()
 scenario1_2()
-# scenario2()
+scenario2()
