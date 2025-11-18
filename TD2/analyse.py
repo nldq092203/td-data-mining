@@ -65,7 +65,7 @@ def plot_results(x_values, brute, fk1, fkfk, title):
 
 list_n = [10, 100, 1000]
 brute, fk1, fkfk = run_experiment_vary_transactions(
-    list_n_transactions=list_n, n_items=50, min_width=5, max_width=15, minsup=0.5
+    list_n_transactions=list_n, n_items=5000, min_width=20, max_width=30, minsup=0.5
 )
 
 plot_results(
