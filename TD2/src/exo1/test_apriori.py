@@ -1,5 +1,3 @@
-# test_apriori.py
-
 from apriori import apriori_frequent_itemsets
 
 def header(title):

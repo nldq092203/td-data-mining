@@ -1,5 +1,3 @@
-# src/exo2/benchmark.py
-
 import time
 import sys
 from pathlib import Path
@@ -11,7 +9,7 @@ from src.exo2.generator import generate_transactions
 from src.exo1.apriori import apriori_frequent_itemsets
 
 
-def benchmark_single_param(
+def benchmark(
     n_items,
     width_range,
     minsup,
@@ -50,15 +48,12 @@ def benchmark_single_param(
 
             for _ in range(n_runs):
                 t0 = time.time()
-                # Skip pruning for the brute-force baseline so that it
-                # counts every possible candidate and exposes the cost
-                # difference visible in the benchmarks.
+
                 apriori_frequent_itemsets(
                     trans,
                     minsup=minsup,
                     method=method,
                     verbose=False,
-                    prune=(method != "bruteforce")
                 )
                 t1 = time.time()
                 times.append(t1 - t0)
@@ -70,9 +65,10 @@ def benchmark_single_param(
     return results
 
 
-def plot_results(transaction_sizes, results, title):
+def plot_results(transaction_sizes, results, title, filename=None):
     """
     Génère une figure matplotlib pour les temps obtenus.
+    Si filename est fourni, sauvegarde l'image dans static/exo2/
     """
 
     plt.figure(figsize=(10, 4))
@@ -90,46 +86,64 @@ def plot_results(transaction_sizes, results, title):
     plt.title(title)
     plt.legend()
     plt.tight_layout()
+
+    if filename:
+        output_dir = Path(__file__).parent.parent.parent / "static" / "exo2"
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        output_path = output_dir / filename
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        print(f"Figure sauvegardée: {output_path}")
+
     plt.show()
 
 
 if __name__ == "__main__":
     # Paramètres du générateur
-    n_items = 200
-    width_range = (25, 30)
-    minsup = 0.25
     sizes = [1000, 2000, 3000]
+    n_runs=3
+
+    n_items=20
+    width_range=(2, 5)
+    minsup=0.4
+    
     generator_kwargs = {
         "popular_ratio": 0.15,   # 15% des items sont populaires
         "popular_weight": 12.0,  # ils apparaissent beaucoup plus souvent
     }
 
-    results = benchmark_single_param(
+    results = benchmark(
         n_items=n_items,
         width_range=width_range,
         minsup=minsup,
         transaction_sizes=sizes,
-        n_runs=3,
+        n_runs=n_runs,
         generator_kwargs=generator_kwargs,
     )
 
     plot_results(
         sizes,
         results,
-        title="Comparaison des méthodes Apriori"
+        title="Comparaison des méthodes Apriori - Paramètres faciles",
+        filename="figure1_facile.png"
     )
 
-    results2 = benchmark_single_param(
+    n_items = 200
+    width_range = (25, 30)
+    minsup = 0.25
+
+    results2 = benchmark(
         n_items=n_items,
         width_range=width_range,
         minsup=minsup,
         transaction_sizes=sizes,
-        n_runs=3,
-        generator_kwargs=None,  # Pas d'items populaires
+        n_runs=n_runs,
+        generator_kwargs=generator_kwargs,
     )   
 
     plot_results(
         sizes,
         results2,
-        title="Comparaison des méthodes Apriori (dataset équilibré)"
+        title="Comparaison des méthodes Apriori - Paramètres difficiles",
+        filename="figure2_difficile.png"
     )
