@@ -94,17 +94,17 @@ def run_ex3():
     for attr in ["a1", "a2"]:
         print(f"3(b) Info gain for {attr}:")
         parent_entropy, child_entropy, gain, details = info_gain_categorical(dataset, attr)
-        print(f"  parent entropy: {parent_entropy:.3f} = entropy(dataset)")
+        print(f"  entropy(dataset) = {parent_entropy:.3f}")
         for value, (c, h) in details.items():
             print(f"  {attr} = {value}: counts={c}, entropy = {h:.3f}")
-        print(f"  sum weighted child entropies: {child_entropy:.3f}")
+        print(f"  entropy after split on {attr} = {child_entropy:.3f}")
         print(f"  gain({attr}) = {gain:.3f}")
         print()
 
     # (c)
     print("3(c) Info gain for continuous attribute a3 (all possible thresholds):")
     parent_entropy, results = info_gain_continuous(dataset, "a3")
-    print(f"  parent entropy: {parent_entropy:.3f} = entropy(dataset)")
+    print(f"  entropy(dataset) = {parent_entropy:.3f}")
     for r in results:
         t = r["threshold"]
         se = r["split_entropy"]

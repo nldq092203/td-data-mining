@@ -73,7 +73,7 @@ def run_ex4():
         print(f"    entropy(dataset) = {parent_H:.3f}")
         for v, (n, counts_v, H_v) in details.items():
             print(f"    {name} = {v}: n={n}, counts={counts_v}, entropy = {H_v:.3f}")
-        print(f"    sum weighted child entropies = {child_H:.3f}")
+        print(f"    entropy after split on {name} = {child_H:.3f}")
         print(f"    gain({name}) = {gain:.3f}")
         print()
 
@@ -88,7 +88,7 @@ def run_ex4():
         print(f"  Attribute {name}:")
         for v, (n, counts_v, g_v) in details.items():
             print(f"    {name} = {v}: n={n}, counts={counts_v}, gini = {g_v:.3f}")
-        print(f"    sum weighted child gini = {child_g:.3f}")
+        print(f"    gini after split on {name} = {child_g:.3f}")
         print(f"    gini gain({name}) = {gain_g:.3f}")
         print()
 
