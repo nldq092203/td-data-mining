@@ -7,15 +7,9 @@ from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
 
 def generate_parity_dataset():
-    """
-    Dataset with 5 attributes (A,B,C,D,Class) encoding
-    the parity of 4 Boolean attributes.
-    Class = 1  <=> odd number of 1s
-    """
     header = ["A", "B", "C", "D", "Class"]
     rows = []
 
-    # all 2^4 = 16 combinations of 0/1 for A,B,C,D
     for a, b, c, d in product([0, 1], repeat=4):
         s = a + b + c + d
         cls = 1 if s % 2 == 1 else 0
@@ -24,13 +18,8 @@ def generate_parity_dataset():
     return header, rows
 
 def encode_for_sklearn(header, rows):
-    """
-    Returns X (n_samples, 4) and y (n_samples,)
-    NOTE: X and y are numeric arrays (float/int),
-    which is exactly what scikit-learn expects.
-    """
-    X = np.array([r[:-1] for r in rows], dtype=float)  # features A,B,C,D
-    y = np.array([r[-1] for r in rows], dtype=int)     # class 0/1
+    X = np.array([r[:-1] for r in rows], dtype=float)
+    y = np.array([r[-1] for r in rows], dtype=int)
     return X, y
 
 def train_tree(X, y, criterion="entropy", random_state=0, max_depth=None):
@@ -44,17 +33,13 @@ def train_tree(X, y, criterion="entropy", random_state=0, max_depth=None):
 
 
 def save_tree_figure(clf, header, filename):
-    """
-    Plot the tree and save it to 'filename'.
-    Automatically creates the directory if needed.
-    """
     out_path = Path(filename)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     plt.figure(figsize=(12, 8))
     tree.plot_tree(
         clf,
-        feature_names=header[:-1],   # ["A","B","C","D"]
+        feature_names=header[:-1],
         class_names=["0", "1"],
         impurity=True,
         filled=False,

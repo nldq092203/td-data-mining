@@ -5,7 +5,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from math import log, ceil
 
 left_tree = ["C1", ["C2", "C3"]]
-right_tree = ["C1", [["C1", "C2"], "C3"]]
+right_tree = [["C1", ["C1", "C2"]], ["C2", "C3"]]
 
 def count_nodes(tree):
     """
