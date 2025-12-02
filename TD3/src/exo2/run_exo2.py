@@ -28,44 +28,45 @@ rows = [
 
 dataset = (header, rows)
 
+from exo1.impurity_measures import gini
 from impurity_split import test_impurity_split
-from helpers import gini_dataset, gini_attribute_multiway, gini_attribute_binary_splits
+from helpers import dataset_impurity, attribute_multiway_split, attribute_binary_splits
 
 def run_exercise_2():
     test_impurity_split()
 
     print("2(b) Gini of entire dataset:")
-    print("  Gini(dataset) =", gini_dataset(dataset))       # should be 0.5
+    print(f"  Gini(dataset) = {dataset_impurity(dataset, gini):.3f}")
     print()
 
     print("2(c) Gini of attribute Customer ID (multiway):")
-    g_customer, _ = gini_attribute_multiway(dataset, "Customer ID")
-    print("  Gini(Customer ID) =", g_customer)              # 0.0
+    g_customer, _ = attribute_multiway_split(dataset, "Customer ID", gini)
+    print(f"  Gini(Customer ID) = {g_customer:.3f}")
     print()
 
     print("2(d) Gini of attribute Gender (multiway):")
-    g_gender, _ = gini_attribute_multiway(dataset, "Gender")
-    print("  Gini(Gender) =", g_gender)                     # ≈ 0.48
+    g_gender, _ = attribute_multiway_split(dataset, "Gender", gini)
+    print(f"  Gini(Gender) = {g_gender:.3f}")
     print()
 
     print("2(e) Gini of attribute Car Type:")
-    g_car_multi, _ = gini_attribute_multiway(dataset, "Car Type")
-    print("  Multiway split:", g_car_multi)                 # ≈ 0.1625
+    g_car_multi, _ = attribute_multiway_split(dataset, "Car Type", gini)
+    print(f"  Multiway split: {g_car_multi:.3f}")
 
     print("  Binary splits:")
-    for subset, g_split in gini_attribute_binary_splits(dataset, "Car Type"):
+    for subset, g_split in attribute_binary_splits(dataset, "Car Type", gini):
         print(f"    {subset} vs others -> Gini_split = {g_split:.3f}")
     print()
 
     print("2(f) Gini of attribute Shirt Size (multiway):")
-    g_shirt, _ = gini_attribute_multiway(dataset, "Shirt Size")
-    print("  Gini(Shirt Size) =", g_shirt)                  # ≈ 0.491
+    g_shirt, _ = attribute_multiway_split(dataset, "Shirt Size", gini)
+    print(f"  Gini(Shirt Size) = {g_shirt:.3f}")
     print()
 
     print("2(g) Best attribute among Gender / Car Type / Shirt Size?")
-    print("  Gini(Gender)      =", g_gender)
-    print("  Gini(Car Type)    =", g_car_multi)
-    print("  Gini(Shirt Size)  =", g_shirt)
+    print(f"  Gini(Gender)      = {g_gender:.3f}")
+    print(f"  Gini(Car Type)    = {g_car_multi:.3f}")
+    print(f"  Gini(Shirt Size)  = {g_shirt:.3f}")
     print("  -> Best (lowest Gini): Car Type")
     print()
 

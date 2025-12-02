@@ -22,6 +22,8 @@ def test_impurity_split():
     d2 = {"N1": {"C0": 1, "C1": 4}, "N2": {"C0": 5, "C1": 2}}
 
     print("2(a) Tests for impurity_split with Gini:")
-    print("  d1 ->", round(impurity_split(d1, gini), 3))
-    print("  d2 ->", round(impurity_split(d2, gini), 3))
+    print("d1 =", d1)
+    print("  impurity_split(d1, gini) =", round(impurity_split(d1, gini), 3))
+    print("d2 =", d2)
+    print("  impurity_split(d2, gini) =", round(impurity_split(d2, gini), 3))
     print()

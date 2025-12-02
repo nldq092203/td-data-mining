@@ -43,21 +43,21 @@ python run_exo6.py
 
 Nous avons implémenté trois fonctions de mesure d'impureté dans [impurity_measures.py](src/exo1/impurity_measures.py) :
 
-1. **Entropy** : Utilise la formule $H = -\sum_{j} p_j \log_2(p_j)$
-2. **Gini** : Utilise la formule $Gini = 1 - \sum_{j} p_j^2$
-3. **Classification Error** : Utilise la formule $Error = 1 - \max_j(p_j)$
+| Mesure | Formule |
+|--------|---------|
+| **Entropy** | $H = -\sum_{j} p_j \log_2(p_j)$ |
+| **Gini** | $Gini = 1 - \sum_{j} p_j^2$ |
+| **Classification Error** | $Error = 1 - \max_j(p_j)$ |
 
 Ces fonctions prennent en entrée une liste de probabilités dont la somme est égale à 1.
 
 ### 1(b) Tests avec les exemples du livre
 
-Nous avons testé les trois mesures d'impureté avec les exemples de la page 159 :
+Pour exécuter les tests et générer la figure :
 
-| Probabilités | Entropy | Gini | Misclassification Error |
-|--------------|---------|------|-------------------------|
-| [0.0, 1.0] | 0.0000 | 0.0000 | 0.0000 |
-| [0.1667, 0.8333] | 0.6500 | 0.2778 | 0.1667 |
-| [0.5, 0.5] | 1.0000 | 0.5000 | 0.5000 |
+```bash
+python src/exo1/run_exo1.py
+```
 
 **Résultats obtenus :**
 ```
@@ -81,14 +81,13 @@ Ces résultats correspondent exactement à ceux attendus dans le livre (page 159
 
 ### 1(c) Reproduction de la Figure 4.13
 
-Nous avons reproduit la figure comparant les trois mesures d'impureté pour les problèmes de classification binaire.
+Nous avons reproduit la figure comparant les trois mesures d'impureté pour les problèmes de classification binaire :
 
-**[PLACEHOLDER : Insérer l'image générée par le script run_exo1.py]**
-*Image à importer : Capture d'écran du graphique matplotlib montrant les trois courbes (Entropy, Gini, Misclassification error) en fonction de p*
+![Comparaison des mesures d'impureté](src/images/exo1/impurity_curves.png)
 
-La figure montre que :
-- L'**entropie** et le **Gini** atteignent leur maximum à p = 0.5 (impureté maximale)
-- L'**erreur de classification** a une forme triangulaire
+**Observations :**
+- Les trois atteignent leur maximum à p = 0.5
+- L'erreur de classification a une forme triangulaire
 - Les trois mesures valent 0 aux extrémités (p = 0 ou p = 1), indiquant une pureté totale
 
 ---

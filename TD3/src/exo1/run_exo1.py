@@ -1,3 +1,4 @@
+from pathlib import Path
 from impurity_measures import entropy, gini, classificationError
 import matplotlib.pyplot as plt
 
@@ -20,6 +21,9 @@ def test_impurities():
 
 
 def plot_impurity_curves():
+    out_path = Path("src/images/exo1/impurity_curves.png")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+
     ps = [i / 100.0 for i in range(0, 101)]
 
     entropies = []
@@ -41,8 +45,7 @@ def plot_impurity_curves():
     plt.legend()
     plt.title("Comparison of impurity measures (binary classification)")
     plt.grid(True)
-    plt.show()
-
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
 
 if __name__ == "__main__":
     test_impurities()
