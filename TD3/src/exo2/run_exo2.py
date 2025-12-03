@@ -70,11 +70,5 @@ def run_exercise_2():
     print("  -> Best (lowest Gini): Car Type")
     print()
 
-    print("2(h) Why not use Customer ID although Gini = 0?")
-    print("  Because Customer ID is just an identifier;")
-    print("  the split memorizes each training example (overfitting)")
-    print("  and does not generalize to new customers.")
-
-
 if __name__ == "__main__":
     run_exercise_2()

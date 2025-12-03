@@ -79,16 +79,21 @@ def main():
     clf_gini = train_tree(X, y, criterion="gini", random_state=0)
     print("  criterion='gini',   random_state=0, accuracy:",
           clf_gini.score(X, y))
+    save_tree_figure(clf_gini, header,
+                     "src/images/exo6/parity_tree_gini.png")
 
     clf_entropy_rs = train_tree(X, y, criterion="entropy", random_state=42)
     print("  criterion='entropy', random_state=42, accuracy:",
           clf_entropy_rs.score(X, y))
+    save_tree_figure(clf_entropy_rs, header,
+                     "src/images/exo6/parity_tree_entropy_rs.png")
 
     clf_shallow = train_tree(X, y, criterion="entropy",
                              random_state=0, max_depth=2)
     print("  criterion='entropy', max_depth=2 (underfitting), accuracy:",
           clf_shallow.score(X, y))
-
+    save_tree_figure(clf_shallow, header,
+                     "src/images/exo6/parity_tree_shallow.png")
 
 if __name__ == "__main__":
     main()

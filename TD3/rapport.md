@@ -1,43 +1,13 @@
 # TD3 - Arbres de Décision
-## Data Mining - Contrôle Continu
-
----
-
-## Instructions pour exécuter le code
-
-Pour exécuter les exercices de ce TD :
-
-```bash
-# Pour l'exercice 1
-cd TD3/src/exo1
-python run_exo1.py
-
-# Pour l'exercice 2
-cd TD3/src/exo2
-python run_exo2.py
-
-# Pour l'exercice 3
-cd TD3/src/exo3
-python run_exo3.py
-
-# Pour l'exercice 4
-cd TD3/src/exo4
-python run_exo4.py
-
-# Pour l'exercice 5
-cd TD3/src/exo5
-python run_exo5.py
-
-# Pour l'exercice 6
-cd TD3/src/exo6
-python run_exo6.py
-```
-
-**Note :** L'exercice 6 génère automatiquement une visualisation de l'arbre de décision dans `src/images/exo6/parity_tree_entropy.png`.
 
 ---
 
 ## Exercice 1 : Mesures d'impureté
+Pour exécuter les tests et générer la figure [impurity_curves.png](src/images/exo1/impurity_curves.png):
+
+```bash
+python src/exo1/run_exo1.py
+```
 
 ### 1(a) Implémentation des fonctions
 
@@ -52,12 +22,6 @@ Nous avons implémenté trois fonctions de mesure d'impureté dans [impurity_mea
 Ces fonctions prennent en entrée une liste de probabilités dont la somme est égale à 1.
 
 ### 1(b) Tests avec les exemples du livre
-
-Pour exécuter les tests et générer la figure :
-
-```bash
-python src/exo1/run_exo1.py
-```
 
 **Résultats obtenus :**
 ```
@@ -85,14 +49,14 @@ Nous avons reproduit la figure comparant les trois mesures d'impureté pour les 
 
 ![Comparaison des mesures d'impureté](src/images/exo1/impurity_curves.png)
 
-**Observations :**
-- Les trois atteignent leur maximum à p = 0.5
-- L'erreur de classification a une forme triangulaire
-- Les trois mesures valent 0 aux extrémités (p = 0 ou p = 1), indiquant une pureté totale
-
 ---
 
 ## Exercice 2 : Calcul de l'impureté après split
+
+Pour générer les résultats de cet exercice:
+```bash
+python src/exo2/run_exo2.py
+```
 
 ### 2(a) Fonction impurity_split
 
@@ -106,8 +70,13 @@ d2 = {"N1": {"C0": 1, "C1": 4}, "N2": {"C0": 5, "C1": 2}}
 ```
 
 **Résultats :**
-- `d1` avec Gini : **0.486** (attendu ≈ 0.486) 
-- `d2` avec Gini : **0.371** (attendu ≈ 0.371) 
+```bash
+2(a) Tests for impurity_split with Gini:
+d1 = {'N1': {'C0': 4, 'C1': 3}, 'N2': {'C0': 2, 'C1': 3}}
+  impurity_split(d1, gini) = 0.486
+d2 = {'N1': {'C0': 1, 'C1': 4}, 'N2': {'C0': 5, 'C1': 2}}
+  impurity_split(d2, gini) = 0.371
+```
 
 Ces résultats correspondent aux calculs détaillés page 161 du livre.
 
@@ -117,20 +86,29 @@ Nous utilisons le dataset fourni avec 20 clients et 5 attributs : Customer ID, G
 
 ### 2(b) Indice de Gini du dataset
 
-**Gini(dataset) = 0.500**
+```bash
+2(b) Gini of entire dataset:
+  Gini(dataset) = 0.500
+```
 
 Calcul : Le dataset contient 10 instances de C0 et 10 instances de C1.
 $$Gini = 1 - (0.5^2 + 0.5^2) = 1 - 0.5 = 0.5$$
 
 ### 2(c) Indice de Gini de l'attribut Customer ID
 
-**Gini(Customer ID) = 0.000**
+```bash
+2(c) Gini of attribute Customer ID (multiway):
+  Gini(Customer ID) = 0.000
+```
 
 Explication : Chaque Customer ID est unique et correspond à exactement une instance. Le split crée donc 20 nœuds purs (chacun avec une seule classe), donnant un Gini de 0.
 
 ### 2(d) Indice de Gini de l'attribut Gender
 
-**Gini(Gender) ≈ 0.480**
+```bash
+2(d) Gini of attribute Gender (multiway):
+  Gini(Gender) = 0.480
+```
 
 Détails du split :
 - **M (Male)** : 6 instances de C0, 4 instances de C1
@@ -143,112 +121,114 @@ Calcul du Gini pondéré :
 
 ### 2(e) Indice de Gini de l'attribut Car Type
 
-#### Multiway split
-**Gini(Car Type) ≈ 0.163**
+```bash
+2(e) Gini of attribute Car Type:
+  Multiway split: 0.163
+  Binary splits:
+    ('Family',) vs others -> Gini_split = 0.469
+    ('Luxury',) vs others -> Gini_split = 0.312
+    ('Sports',) vs others -> Gini_split = 0.167
+```
 
-Distribution :
-- **Family** : 1 instance C0, 3 instances C1
-- **Sports** : 7 instances C0, 0 instances C1
-- **Luxury** : 2 instances C0, 7 instances C1
-
-#### Binary splits
-
-Nous avons testé toutes les combinaisons possibles de binary splits :
-
-| Split | Gini |
-|-------|------|
-| {Family} vs {Sports, Luxury} | 0.450 |
-| {Sports} vs {Family, Luxury} | 0.300 |
-| {Luxury} vs {Family, Sports} | 0.405 |
-
-Le meilleur binary split est **{Sports} vs {Family, Luxury}** avec Gini = 0.300.
+Le meilleur binary split est **{Sports} vs {Family, Luxury}** avec Gini = 0.167.
 
 ### 2(f) Indice de Gini de l'attribut Shirt Size (multiway split)
 
-**Gini(Shirt Size) ≈ 0.491**
+```bash
+2(f) Gini of attribute Shirt Size (multiway):
+  Gini(Shirt Size) = 0.491
+```
 
-Distribution :
-- **Small** : 3 instances C0, 2 instances C1
-- **Medium** : 3 instances C0, 4 instances C1
-- **Large** : 2 instances C0, 2 instances C1
-- **Extra Large** : 2 instances C0, 2 instances C1
-
-L'attribut Shirt Size ne permet pas une bonne séparation des classes (Gini proche de 0.5).
+L'attribut **Shirt Size** ne permet pas une bonne séparation des classes (Gini proche de 0.5).
 
 ### 2(g) Meilleur attribut parmi Gender, Car Type et Shirt Size
 
-**Comparaison des indices de Gini :**
+```
+2(g) Best attribute among Gender / Car Type / Shirt Size?
+  Gini(Gender)      = 0.480
+  Gini(Car Type)    = 0.163
+  Gini(Shirt Size)  = 0.491
+```
 
-| Attribut | Gini (multiway) |
-|----------|-----------------|
-| Gender | 0.480 |
-| Car Type | **0.163** |
-| Shirt Size | 0.491 |
-
-**Conclusion :** **Car Type** est le meilleur attribut car il a le plus faible indice de Gini (0.163). Cela signifie qu'il permet la meilleure séparation des classes et réduit le plus l'impureté.
+**Conclusion :** **Car Type** est le meilleur attribut car il a le plus faible indice de Gini (0.163).
 
 ### 2(h) Pourquoi ne pas utiliser Customer ID ?
 
-Bien que Customer ID ait un indice de Gini de 0.0 (le plus faible possible), **il ne doit pas être utilisé comme attribut de test** pour les raisons suivantes :
+Bien que Customer ID ait le plus petit indice de Gini, il ne doit pas être utilisé comme attribut de test pour les raisons suivantes :
 
 1. **Identifiant unique** : Chaque Customer ID correspond à une seule instance du dataset
 2. **Overfitting** : Le modèle mémoriserait simplement chaque exemple d'entraînement
 3. **Absence de généralisation** : L'arbre ne pourrait pas classifier de nouveaux clients avec des IDs différents
 4. **Pas de valeur prédictive** : L'ID n'a aucune relation causale ou sémantique avec la classe cible
 
-En résumé, utiliser Customer ID reviendrait à créer une table de correspondance plutôt qu'un véritable modèle de classification généralisant.
-
 ---
 
 ## Exercice 3 : Gain d'information et attributs continus
 
+
+Pour générer les résultats de cet exercice:
+```bash
+python src/exo3/run_exo3.py
+```
+
 ### Dataset utilisé
 
-Nous utilisons un dataset avec 9 instances, 3 attributs (a1, a2 catégoriques et a3 continu) et 2 classes cibles (+ et -).
+Nous utilisons un dataset avec 9 instances, 3 attributs et 2 classes cibles (+ et -).
 
 ### 3(a) Entropie du dataset
 
-**H(D) = 0.991**
+```bash
+3(a) Entropy of dataset:
+  entropy(dataset) = 0.991
+```
 
 Distribution des classes :
 - Classe `-` : 5 instances
 - Classe `+` : 4 instances
 
 Calcul :
-$$H(D) = -\frac{5}{9}\log_2(\frac{5}{9}) - \frac{4}{9}\log_2(\frac{4}{9}) \approx 0.991$$
-
-L'entropie est proche de 1, ce qui indique une distribution relativement équilibrée des classes.
+$$entropy(dataset) = -\frac{5}{9}\log_2(\frac{5}{9}) - \frac{4}{9}\log_2(\frac{4}{9}) \approx 0.991$$
 
 ### 3(b) Gain d'information pour a1 et a2
 
 #### Attribut a1
 
-**Résultats :**
-- H(D) = 0.991
-- **Gain(a1) = 0.229**
+```bash
+3(b) Info gain for a1:
+  entropy(dataset) = 0.991
+  a1 = T: counts=Counter({'+': 3, '-': 1}), entropy = 0.811
+  a1 = F: counts=Counter({'-': 4, '+': 1}), entropy = 0.722
+  entropy after split on a1 = 0.762
+  gain(a1) = 0.229
+```
 
 Détails du split :
-- **a1 = T** : 3 instances `+`, 1 instance `-` → H = 0.811
-- **a1 = F** : 1 instance `+`, 4 instances `-` → H = 0.722
+- **a1 = T** : 3 instances `+`, 1 instance `-` → entropy = 0.811
+- **a1 = F** : 1 instance `+`, 4 instances `-` → entropy = 0.722
 
 Entropie pondérée après split :
-$$H(D|a1) = \frac{4}{9} \times 0.811 + \frac{5}{9} \times 0.722 = 0.762$$
+$$entropy(dataset|a1) = \frac{4}{9} \times 0.811 + \frac{5}{9} \times 0.722 = 0.762$$
 
 Gain d'information :
 $$Gain(a1) = 0.991 - 0.762 = 0.229$$
 
 #### Attribut a2
 
-**Résultats :**
-- H(D) = 0.991
-- **Gain(a2) = 0.007**
+```bash
+3(b) Info gain for a2:
+  entropy(dataset) = 0.991
+  a2 = T: counts=Counter({'-': 3, '+': 2}), entropy = 0.971
+  a2 = F: counts=Counter({'-': 2, '+': 2}), entropy = 1.000
+  entropy after split on a2 = 0.984
+  gain(a2) = 0.007
+```
 
 Détails du split :
-- **a2 = T** : 2 instances `+`, 3 instances `-` → H = 0.971
-- **a2 = F** : 2 instances `+`, 2 instances `-` → H = 1.000
+- **a2 = T** : 2 instances `+`, 3 instances `-` → entropy = 0.971
+- **a2 = F** : 2 instances `+`, 2 instances `-` → entropy = 1.000
 
 Entropie pondérée après split :
-$$H(D|a2) = \frac{5}{9} \times 0.971 + \frac{4}{9} \times 1.000 = 0.984$$
+$$entropy(dataset|a2) = \frac{5}{9} \times 0.971 + \frac{4}{9} \times 1.000 = 0.984$$
 
 Gain d'information :
 $$Gain(a2) = 0.991 - 0.984 = 0.007$$
@@ -257,47 +237,50 @@ L'attribut a1 apporte beaucoup plus d'information (0.229) que a2 (0.007).
 
 ### 3(c) Gain d'information pour l'attribut continu a3
 
-Pour un attribut continu, nous testons tous les seuils possibles entre valeurs consécutives.
+```bash
+3(c) Info gain for continuous attribute a3 (all possible thresholds):
+  entropy(dataset) = 0.991
+  threshold a3 <= 2.0: left=Counter({'+': 1}), right=Counter({'-': 5, '+': 3}), entropy_split=0.848, gain=0.143
+  threshold a3 <= 3.5: left=Counter({'+': 1, '-': 1}), right=Counter({'-': 4, '+': 3}), entropy_split=0.989, gain=0.003
+  threshold a3 <= 4.5: left=Counter({'+': 2, '-': 1}), right=Counter({'-': 4, '+': 2}), entropy_split=0.918, gain=0.073
+  threshold a3 <= 5.5: left=Counter({'-': 3, '+': 2}), right=Counter({'+': 2, '-': 2}), entropy_split=0.984, gain=0.007
+  threshold a3 <= 6.5: left=Counter({'+': 3, '-': 3}), right=Counter({'-': 2, '+': 1}), entropy_split=0.973, gain=0.018
+  threshold a3 <= 7.5: left=Counter({'+': 4, '-': 4}), right=Counter({'-': 1}), entropy_split=0.889, gain=0.102
+```
 
 **Valeurs de a3 :** [1.0, 3.0, 4.0, 5.0, 5.0, 6.0, 7.0, 7.0, 8.0]
 
 **Seuils testés et résultats :**
 
-| Seuil | Split | Left | Right | H_split | Gain |
-|-------|-------|------|-------|---------|------|
-| a3 ≤ 2.0 | {1.0} vs {3.0, 4.0, ...} | Counter({'+': 1}) | Counter({'-': 5, '+': 3}) | 0.848 | **0.143** |
-| a3 ≤ 3.5 | {1.0, 3.0} vs {4.0, ...} | Counter({'+': 1, '-': 1}) | Counter({'-': 4, '+': 3}) | 0.989 | 0.003 |
-| a3 ≤ 4.5 | {1.0, 3.0, 4.0} vs {...} | Counter({'+': 2, '-': 1}) | Counter({'-': 4, '+': 2}) | 0.918 | 0.073 |
-| a3 ≤ 5.5 | {1.0, ..., 5.0} vs {...} | Counter({'-': 3, '+': 2}) | Counter({'+': 2, '-': 2}) | 0.984 | 0.007 |
-| a3 ≤ 6.5 | {1.0, ..., 6.0} vs {...} | Counter({'+': 3, '-': 3}) | Counter({'-': 2, '+': 1}) | 0.973 | 0.018 |
-| a3 ≤ 7.5 | {1.0, ..., 7.0} vs {8.0} | Counter({'+': 4, '-': 4}) | Counter({'-': 1}) | 0.889 | 0.102 |
+| Seuil    | Left                      | Right                     | entropy_split | Gain  |
+|----------|---------------------------|---------------------------|---------------|-------|
+| a3 ≤ 2.0 | Counter({'+': 1})         | Counter({'-': 5, '+': 3}) | 0.848         | 0.143 |
+| a3 ≤ 3.5 | Counter({'+': 1, '-': 1}) | Counter({'-': 4, '+': 3}) | 0.989         | 0.003 |
+| a3 ≤ 4.5 | Counter({'+': 2, '-': 1}) | Counter({'-': 4, '+': 2}) | 0.918         | 0.073 |
+| a3 ≤ 5.5 | Counter({'-': 3, '+': 2}) | Counter({'+': 2, '-': 2}) | 0.984         | 0.007 |
+| a3 ≤ 6.5 | Counter({'+': 3, '-': 3}) | Counter({'-': 2, '+': 1}) | 0.973         | 0.018 |
+| a3 ≤ 7.5 | Counter({'+': 4, '-': 4}) | Counter({'-': 1})         | 0.889         | 0.102 |
 
 **Meilleur seuil pour a3 :** a3 ≤ 2.0 avec **Gain = 0.143**
 
 ### 3(d) Meilleur split selon le gain d'information
 
-**Comparaison des gains d'information :**
-
-| Attribut | Gain |
-|----------|------|
-| a1 | **0.229** |
-| a2 | 0.007 |
-| a3 (seuil ≤ 2.0) | 0.143 |
-
-**Conclusion :** L'attribut **a1** offre le meilleur split avec un gain d'information de 0.229, suivi de a3 (0.143) puis a2 (0.007).
-
-Le gain d'information mesure la réduction d'entropie apportée par le split. Plus le gain est élevé, plus l'attribut est informatif pour la classification.
+```bash
+3(d) Best split according to information gain:
+  gain(a1) = 0.229
+  gain(a2) = 0.007
+  Best gain(a3) = 0.143 for threshold a3 <= 2.0
+  -> Best attribute: a1 (highest information gain).
+```
 
 ### 3(e) Meilleur split entre a1 et a2 selon l'erreur de classification
 
-**Résultats :**
-
-| Attribut | Taux d'erreur pondéré |
-|----------|-----------------------|
-| a1 | **0.222** |
-| a2 | 0.444 |
-
-**Conclusion :** L'attribut **a1** est meilleur (erreur plus faible : 0.222 vs 0.444).
+```bash
+3(e) Best split (a1 vs a2) by classification error:
+  error split(a1) = 0.222
+  error split(a2) = 0.444
+  -> Best (lowest error): a1
+```
 
 Détails pour a1 :
 - a1 = T : 4 instances, classe majoritaire `+` (3), erreur locale = 1/4 = 0.25
@@ -311,14 +294,12 @@ Détails pour a2 :
 
 ### 3(f) Meilleur split entre a1 et a2 selon l'indice de Gini
 
-**Résultats :**
-
-| Attribut | Gini split |
-|----------|------------|
-| a1 | **0.344** |
-| a2 | 0.489 |
-
-**Conclusion :** L'attribut **a1** est meilleur (Gini plus faible : 0.344 vs 0.489).
+```bash
+3(f) Best split (a1 vs a2) by Gini index:
+  gini split(a1) = 0.344
+  gini split(a2) = 0.489
+  -> Best (lowest Gini): a1
+```
 
 Détails pour a1 :
 - a1 = T : Gini = 1 - ((3/4)² + (1/4)²) = 0.375
@@ -330,66 +311,64 @@ Détails pour a2 :
 - a2 = F : Gini = 1 - ((2/4)² + (2/4)²) = 0.500
 - Gini pondéré = (5/9) × 0.480 + (4/9) × 0.500 = 0.489
 
-### Synthèse de l'exercice 3
-
-Toutes les mesures d'impureté (gain d'information, erreur de classification, indice de Gini) convergent vers la même conclusion : **l'attribut a1 est le meilleur choix pour le premier split** de l'arbre de décision.
-
-Comparaison des trois mesures pour a1 vs a2 :
-- Gain d'information : a1 (0.229) >> a2 (0.007)
-- Erreur de classification : a1 (0.222) < a2 (0.444)
-- Indice de Gini : a1 (0.344) < a2 (0.489)
-
-L'attribut a1 réduit significativement l'impureté, tandis que a2 n'apporte presque aucune information discriminante. Pour l'attribut continu a3, le meilleur seuil (≤ 2.0) offre un gain modéré mais reste inférieur à a1.
-
 ---
 
 ## Exercice 4 : Comparaison des critères de sélection
+
+Pour générer les résultats de cet exercice:
+```bash
+python src/exo3/run_exo3.py
+```
 
 ### Dataset utilisé
 
 Un dataset avec 10 instances, 2 attributs binaires (A et B) et 2 classes (+ et -).
 
-Distribution des données :
-- 4 instances de classe `+`
-- 6 instances de classe `-`
-
-**[PLACEHOLDER : Insérer l'image des résultats d'exécution]**
-*Image à importer : Capture d'écran de la sortie du programme run_exo4.py montrant les calculs détaillés*
-
 ### 4(a) Gain d'information pour A et B
 
-**Entropie du dataset :** H(D) = 0.971
+**Entropie du dataset :** 
+```bash
+  entropy(dataset) = 0.971
+```
 
 #### Attribut A
 
-**Résultats :**
-- H(D) = 0.971
-- **Gain(A) = 0.281**
+```bash
+  Attribute A:
+    entropy(dataset) = 0.971
+    A = T: n=7, counts=Counter({'+': 4, '-': 3}), entropy = 0.985
+    A = F: n=3, counts=Counter({'-': 3}), entropy = 0.000
+    entropy after split on A = 0.690
+    gain(A) = 0.281
+```
 
 Détails du split :
-- **A = T** : n=7, distribution {'+': 4, '-': 3} → H = 0.985
-- **A = F** : n=3, distribution {'-': 3} → H = 0.000
+- **A = T** : n=7, distribution {'+': 4, '-': 3} → entropy = 0.985
+- **A = F** : n=3, distribution {'-': 3} → entropy = 0.000
 
 Entropie pondérée après split :
-$$H(D|A) = \frac{7}{10} \times 0.985 + \frac{3}{10} \times 0.000 = 0.690$$
+$$entropy(dataset|A) = \frac{7}{10} \times 0.985 + \frac{3}{10} \times 0.000 = 0.690$$
 
 Gain d'information :
 $$Gain(A) = 0.971 - 0.690 = 0.281$$
 
-L'attribut A crée un nœud parfaitement pur (A = F contient uniquement des instances de classe `-`).
-
 #### Attribut B
 
-**Résultats :**
-- H(D) = 0.971
-- **Gain(B) = 0.256**
+```bash
+  Attribute B:
+    entropy(dataset) = 0.971
+    B = F: n=6, counts=Counter({'-': 5, '+': 1}), entropy = 0.650
+    B = T: n=4, counts=Counter({'+': 3, '-': 1}), entropy = 0.811
+    entropy after split on B = 0.715
+    gain(B) = 0.256
+```
 
 Détails du split :
-- **B = F** : n=5, distribution {'-': 5, '+': 1} → H = 0.650
-- **B = T** : n=4, distribution {'+': 3, '-': 1} → H = 0.811
+- **B = F** : n=5, distribution {'-': 5, '+': 1} → entropy = 0.650
+- **B = T** : n=4, distribution {'+': 3, '-': 1} → entropy = 0.811
 
 Entropie pondérée après split :
-$$H(D|B) = \frac{5}{10} \times 0.650 + \frac{4}{10} \times 0.811 = 0.715$$
+$$entropy(dataset|B) = \frac{5}{10} \times 0.650 + \frac{4}{10} \times 0.811 = 0.715$$
 
 Gain d'information :
 $$Gain(B) = 0.971 - 0.715 = 0.256$$
@@ -398,39 +377,49 @@ $$Gain(B) = 0.971 - 0.715 = 0.256$$
 
 ### 4(b) Gain de Gini pour A et B
 
-**Indice de Gini du dataset :** Gini(D) = 0.480
-
+**Indice de Gini du dataset :**
+```bash
+  gini(dataset) = 0.480
+```
 Calcul :
 $$Gini(D) = 1 - \left(\frac{4}{10}\right)^2 - \left(\frac{6}{10}\right)^2 = 1 - 0.16 - 0.36 = 0.480$$
 
 #### Attribut A
 
-**Résultats :**
-- Gini(D) = 0.480
-- **Gini gain(A) = 0.137**
+```bash
+  Attribute A:
+    A = T: n=7, counts=Counter({'+': 4, '-': 3}), gini = 0.490
+    A = F: n=3, counts=Counter({'-': 3}), gini = 0.000
+    gini after split on A = 0.343
+    gini gain(A) = 0.137
+```
 
 Détails du split :
 - **A = T** : n=7, distribution {'+': 4, '-': 3} → Gini = 0.490
 - **A = F** : n=3, distribution {'-': 3} → Gini = 0.000
 
 Gini pondéré après split :
-$$Gini(D|A) = \frac{7}{10} \times 0.490 + \frac{3}{10} \times 0.000 = 0.343$$
+$$Gini(dataset|A) = \frac{7}{10} \times 0.490 + \frac{3}{10} \times 0.000 = 0.343$$
 
 Gain de Gini :
 $$Gini\_gain(A) = 0.480 - 0.343 = 0.137$$
 
 #### Attribut B
 
-**Résultats :**
-- Gini(D) = 0.480
-- **Gini gain(B) = 0.163**
+```bash
+  Attribute B:
+    B = F: n=6, counts=Counter({'-': 5, '+': 1}), gini = 0.278
+    B = T: n=4, counts=Counter({'+': 3, '-': 1}), gini = 0.375
+    gini after split on B = 0.317
+    gini gain(B) = 0.163
+```
 
 Détails du split :
 - **B = F** : n=5, distribution {'-': 5, '+': 1} → Gini = 0.278
 - **B = T** : n=4, distribution {'+': 3, '-': 1} → Gini = 0.375
 
 Gini pondéré après split :
-$$Gini(D|B) = \frac{5}{10} \times 0.278 + \frac{4}{10} \times 0.375 = 0.317$$
+$$Gini(dataset|B) = \frac{5}{10} \times 0.278 + \frac{4}{10} \times 0.375 = 0.317$$
 
 Gain de Gini :
 $$Gini\_gain(B) = 0.480 - 0.317 = 0.163$$
@@ -441,173 +430,111 @@ $$Gini\_gain(B) = 0.480 - 0.317 = 0.163$$
 
 **Réponse : OUI**
 
-Cet exercice démontre empiriquement que le gain d'information et le gain de Gini peuvent favoriser des attributs différents :
-
 | Critère | Meilleur attribut | Score |
 |---------|-------------------|-------|
-| Gain d'information (Entropy) | **A** | 0.281 |
+| Gain d'information | **A** | 0.281 |
 | Gain de Gini | **B** | 0.163 |
 
-**Analyse :**
-
-- **Gain d'information** : Favorise l'attribut A car il crée un sous-ensemble parfaitement pur (A = F avec 100% de classe `-`). L'entropie récompense fortement la création de nœuds purs.
-
-- **Gain de Gini** : Favorise l'attribut B car il crée deux sous-ensembles relativement équilibrés avec une meilleure séparation globale. Le Gini favorise une répartition plus équilibrée des instances.
-
-**Pourquoi cette différence ?**
-
-Les deux mesures d'impureté ont des sensibilités différentes :
-- L'**entropie** est plus sensible aux petits changements de probabilité et récompense davantage les splits qui créent des nœuds très purs, même si ces nœuds sont de petite taille.
-- Le **Gini** est une mesure plus "équilibrée" qui favorise les splits créant des partitions plus uniformes en taille avec une bonne séparation.
-
-Cette différence illustre qu'il n'existe pas de "meilleure" mesure d'impureté universelle - le choix dépend du problème et des caractéristiques souhaitées pour l'arbre de décision.
+L'entropie favorise A car il crée un nœud parfaitement pur (A = F -> 100% classe `-`). Le Gini favorise B car il produit des partitions plus équilibrées en taille. Cette différence illustre qu'il n'existe pas de mesure d'impureté universellement meilleure.
 
 ---
 
 ## Exercice 5 : Principe MDL (Minimum Description Length)
 
+Pour générer les résultats de cet exercice:
+```bash
+python src/exo5/run_exo5.py
+```
+
 ### Contexte
 
-Cet exercice utilise le principe du **rasoir d'Occam** via la **Longueur de Description Minimale (MDL)** pour comparer deux arbres de décision générés à partir d'un dataset avec :
-- **16 attributs binaires**
-- **3 classes** (C1, C2, C3)
+Cet exercice utilise le principe du rasoir d'Occam via la Longueur de Description Minimale (MDL) pour comparer deux arbres de décision générés à partir d'un dataset avec :
+- 16 attributs binaires
+- 3 classes (C1, C2, C3)
 
-Le principe MDL favorise le modèle qui minimise le coût total d'encodage : **Cost(tree) + Cost(data|tree)**
+![Structure des deux arbres de décision](src/images/exo5/trees.png)
 
-**Structure des arbres :**
-
-**Arbre gauche (left tree) :**
-```
-     Root
-    /    \
-   C1    Internal
-         /       \
-        C2       C3
-```
-- 2 nœuds internes
-- 3 feuilles
-- 7 erreurs de classification
-
-**Arbre droit (right tree) :**
-```
-        Root
-       /    \
-  Internal   C3
-   /    \
-  C1    C2
-```
-- 3 nœuds internes
-- 4 feuilles
-- 4 erreurs de classification
-
-**[PLACEHOLDER : Insérer l'image des résultats d'exécution]**
-*Image à importer : Capture d'écran de la sortie du programme run_exo5.py montrant les calculs de coûts*
+**Encodage**:
+- gauche: ["C1", ["C2", "C3"]]
+- droite: \[["C1", ["C1", "C2"]], ["C2", "C3"]]
 
 ### 5(a) Calcul de Cost(tree)
 
-Le coût d'encodage d'un arbre comprend :
-- **Nœuds internes** : chaque nœud encode l'ID de l'attribut de split → $\lceil \log_2(m) \rceil$ bits
-- **Feuilles** : chaque feuille encode l'ID de la classe → $\lceil \log_2(k) \rceil$ bits
-
-Avec m = 16 attributs et k = 3 classes :
-- $\lceil \log_2(16) \rceil = 4$ bits par nœud interne
-- $\lceil \log_2(3) \rceil = 2$ bits par feuille
-
-**Arbre gauche :**
-```
-Cost(tree_left) = 2 × 4 + 3 × 2 = 8 + 6 = 14 bits
+```bash
+Cost(tree) only:
+  left tree  = 14
+  right tree = 26
 ```
 
-**Arbre droit :**
-```
-Cost(tree_right) = 3 × 4 + 4 × 2 = 12 + 8 = 20 bits
-```
+**Fonction implémentée dans** [run_exo5.py](src/exo5/run_exo5.py:28)
 
-L'arbre gauche a un coût d'encodage plus faible (14 < 20) car il est plus simple (moins de nœuds).
+**Paramètres :**
+- m = 16 attributs → ⌈log₂(16)⌉ = 4 bits/attribut
+- k = 3 classes → ⌈log₂(3)⌉ = 2 bits/classe
+
+**Calcul :**
+
+| Arbre | Structure (internes, feuilles) | Cost(tree) |
+|-------|-------------------------------|------------|
+| **Gauche** | (2, 3) | 2×4 + 3×2 = **14 bits** |
+| **Droite** | (4, 5) | 4×4 + 5×2 = **26 bits** |
 
 ### 5(b) Quel arbre est le meilleur selon MDL ?
 
 Le coût total selon MDL est :
 ```
 Total Cost = Cost(tree) + Cost(data|tree)
-```
-
-Où **Cost(data|tree)** encode les erreurs de classification :
-```
 Cost(data|tree) = nb_errors × ⌈log₂(n)⌉
 ```
+```bash
+n = 8
+  Total cost left tree  = 35 bits
+  Total cost right tree = 38 bits
 
-**Résultats pour différentes valeurs de n :**
+n = 16
+  Total cost left tree  = 42 bits
+  Total cost right tree = 42 bits
 
-| n (taille dataset) | Arbre gauche (7 erreurs) | Arbre droit (4 erreurs) | Meilleur arbre |
-|-------------------|--------------------------|-------------------------|----------------|
-| n = 8 | 14 + 7×3 = **35 bits** | 20 + 4×3 = **32 bits** | **Droit** ✓ |
-| n = 16 | 14 + 7×4 = **42 bits** | 20 + 4×4 = **36 bits** | **Droit** ✓ |
-| n = 32 | 14 + 7×5 = **49 bits** | 20 + 4×5 = **40 bits** | **Droit** ✓ |
-| n = 64 | 14 + 7×6 = **56 bits** | 20 + 4×6 = **44 bits** | **Droit** ✓ |
+n = 32
+  Total cost left tree  = 49 bits
+  Total cost right tree = 46 bits
 
-**Analyse détaillée :**
-
-Pour n = 16 (exemple) :
-- Arbre gauche : Cost(tree) = 14, Cost(data|tree) = 7 × ⌈log₂(16)⌉ = 7 × 4 = 28 → **Total = 42 bits**
-- Arbre droit : Cost(tree) = 20, Cost(data|tree) = 4 × ⌈log₂(16)⌉ = 4 × 4 = 16 → **Total = 36 bits**
-
-**Conclusion générale :**
-
-L'**arbre droit est toujours meilleur** selon le principe MDL, pour toutes les valeurs de n testées.
-
-**Pourquoi ?**
-
-Bien que l'arbre droit soit plus complexe (Cost(tree) = 20 vs 14), il commet **moins d'erreurs** (4 vs 7). Le gain sur le coût des erreurs (Cost(data|tree)) compense largement le surcoût de la structure de l'arbre.
-
-**Formule de l'écart :**
-```
-Différence = (14 + 7×⌈log₂(n)⌉) - (20 + 4×⌈log₂(n)⌉)
-           = -6 + 3×⌈log₂(n)⌉
+n = 64
+  Total cost left tree  = 56 bits
+  Total cost right tree = 50 bits
 ```
 
-Pour n ≥ 8 : ⌈log₂(n)⌉ ≥ 3, donc 3×⌈log₂(n)⌉ ≥ 9 > 6
+**Résultats :**
 
-L'arbre droit devient et reste meilleur dès que n ≥ 8.
+| n | Gauche (14 bits, 7 erreurs) | Droite (26 bits, 4 erreurs) | Meilleur |
+|---|----------------------------|----------------------------|----------|
+| 8 | 35 bits | 38 bits | **Gauche** |
+| 16 | 42 bits | 42 bits | **Égalité** |
+| 32 | 49 bits | 46 bits | **Droite** |
+| 64 | 56 bits | 50 bits | **Droite** |
 
-**Discussion sur n :**
+**Analyse :**
 
-La question demande de discuter en fonction des valeurs possibles de n. Analysons les cas limites :
+Le **point de bascule est n = 16** :
+```
+14 + 7×⌈log₂(n)⌉ = 26 + 4×⌈log₂(n)⌉
+→ 3×⌈log₂(n)⌉ = 12
+→ ⌈log₂(n)⌉ = 4  donc n = 16
+```
 
-- **Pour n très petit** (n < 8) : Si n = 4, ⌈log₂(4)⌉ = 2
-  - Gauche : 14 + 7×2 = 28 bits
-  - Droit : 20 + 4×2 = 28 bits
-  - Les deux arbres sont équivalents !
+- **n < 16** : Arbre gauche préféré (simplicité > précision)
+- **n > 16** : Arbre droite préféré (précision > complexité)
 
-- **Pour n = 2** : ⌈log₂(2)⌉ = 1
-  - Gauche : 14 + 7×1 = 21 bits
-  - Droit : 20 + 4×1 = 24 bits
-  - L'arbre gauche devient meilleur !
-
-**Point de bascule :** n = 4 est le point d'équilibre. Pour n < 4, l'arbre gauche (plus simple) est préférable. Pour n ≥ 4, l'arbre droit (plus précis) devient meilleur.
-
-### Interprétation du principe MDL
-
-Le principe MDL illustre un **compromis fondamental** en apprentissage automatique :
-
-1. **Simplicité du modèle** (Cost(tree)) : favorise les arbres petits et simples
-2. **Précision du modèle** (Cost(data|tree)) : favorise les arbres qui commettent peu d'erreurs
-
-MDL pénalise à la fois :
-- Les modèles trop complexes (overfitting potentiel)
-- Les modèles trop imprécis (underfitting)
-
-Dans cet exemple, l'arbre droit, bien que plus complexe, est justifié par sa meilleure précision lorsque le dataset est suffisamment grand (n ≥ 4).
+**Conclusion :** Le principe MDL illustre le rasoir d'Occam : un modèle plus complexe n'est justifié que s'il réduit suffisamment les erreurs. Ce compromis est au cœur de la régularisation en machine learning.
 
 ---
 
 ## Exercice 6 : Utilisation de sklearn et fonction de parité
 
-### Contexte
-
-Cet exercice utilise **scikit-learn** pour construire des arbres de décision sur la **fonction de parité**, un problème classique qui teste les limites des algorithmes d'apprentissage.
-
-**Fonction de parité :** La classe vaut 1 si et seulement si le nombre d'attributs valant 1 est impair.
+Pour générer les résultats de cet exercice et les figures [parity_tree_entropy.png](src/images/exo6/parity_tree_entropy.png),  [parity_tree_entropy_rs.png](src/images/exo6/parity_tree_entropy_rs.png),  [parity_tree_gini.png](src/images/exo6/parity_tree_gini.png),  [parity_tree_shallow.png](src/images/exo6/parity_tree_shallow.png):
+```bash
+python src/exo6/run_exo6.py
+```
 
 ### 6(a) Génération du dataset de parité
 
@@ -617,18 +544,6 @@ Nous avons généré un dataset avec 5 attributs (A, B, C, D, Class) encodant la
 - **16 tuples** : toutes les combinaisons possibles de 4 attributs binaires (2⁴ = 16)
 - **Attributs** : A, B, C, D ∈ {0, 1}
 - **Classe** : Class = 1 si (A + B + C + D) est impair, 0 sinon
-
-**Exemples de tuples :**
-
-| A | B | C | D | Class |
-|---|---|---|---|-------|
-| 0 | 0 | 0 | 0 | 0 |
-| 0 | 0 | 0 | 1 | 1 |
-| 0 | 0 | 1 | 0 | 1 |
-| 0 | 0 | 1 | 1 | 0 |
-| 0 | 1 | 0 | 0 | 1 |
-
-Le dataset complet contient exactement 16 instances (8 de classe 0, 8 de classe 1).
 
 ### 6(b) Encodage pour sklearn et limitation des types
 
@@ -727,56 +642,3 @@ Sans `random_state` fixé : L'arbre peut varier légèrement dans sa structure (
 - Le nombre total de nœuds reste le même
 
 **Conclusion :** Pour un problème déterministe comme la parité, avec un dataset complet (toutes les combinaisons), l'arbre converge toujours vers une solution parfaite, quelle que soit la mesure d'impureté choisie.
-
----
-
-## Conclusion
-
-Ce TD nous a permis de :
-- Implémenter et comparer trois mesures d'impureté (Entropy, Gini, Classification Error)
-- Comprendre comment calculer l'impureté après un split
-- Calculer le gain d'information pour évaluer la qualité des attributs
-- Gérer les attributs continus en testant différents seuils
-- Découvrir que différentes mesures d'impureté peuvent favoriser des attributs différents
-- Comprendre les différences fondamentales entre l'entropie et le Gini dans leur sensibilité aux splits
-- Appliquer le principe MDL pour comparer des arbres selon un compromis simplicité/précision
-- Utiliser scikit-learn pour construire des arbres de décision
-- Identifier les limitations fondamentales des arbres de décision (fonction de parité)
-- Identifier les pièges liés à l'utilisation d'identifiants uniques dans les arbres de décision
-
-**Points clés :**
-
-1. **Exercice 1** : Les trois mesures d'impureté (Entropy, Gini, Classification Error) ont des comportements différents, l'entropie et le Gini étant plus sensibles aux changements de distribution.
-
-2. **Exercice 2** : L'attribut Car Type s'est révélé être le meilleur pour la classification avec un Gini de 0.163, démontrant l'importance de choisir des attributs ayant un pouvoir prédictif réel.
-
-3. **Exercice 3** : L'attribut a1 a été unanimement choisi par toutes les mesures (gain = 0.229), montrant que dans de nombreux cas, les différentes mesures convergent vers le même choix.
-
-4. **Exercice 4** : Cas remarquable où le gain d'information favorise A tandis que le gain de Gini favorise B, illustrant que le choix de la mesure d'impureté peut influencer la structure de l'arbre de décision.
-
-5. **Exercice 5** : Le principe MDL démontre le compromis entre simplicité du modèle et précision. Un arbre plus complexe peut être justifié s'il réduit suffisamment les erreurs. Le point de bascule dépend de la taille du dataset (n ≥ 4 dans notre exemple).
-
-6. **Exercice 6** : La fonction de parité illustre une limitation fondamentale des arbres de décision : certaines fonctions (XOR généralisé) nécessitent des arbres de taille exponentielle. L'arbre optimal nécessite 2ⁿ feuilles pour n attributs, démontrant que les arbres ne sont pas adaptés à tous les problèmes.
-
-**Synthèse générale :**
-
-Les arbres de décision requièrent de nombreux choix méthodologiques :
-- **Mesure d'impureté** : Entropy vs Gini (exercices 3-4)
-- **Critère d'arrêt** : MDL offre un cadre théorique pour éviter l'overfitting (exercice 5), max_depth prévient les arbres trop profonds (exercice 6)
-- **Sélection d'attributs** : Éviter les identifiants sans valeur prédictive (exercice 2)
-- **Gestion du continu** : Tester systématiquement tous les seuils possibles (exercice 3)
-- **Encodage des données** : Sklearn requiert des données numériques (exercice 6)
-
-**Limitations des arbres de décision :**
-- Fonctions XOR et parité : taille exponentielle (exercice 6)
-- Besoin d'encodage numérique pour sklearn
-- Sensibilité aux paramètres (random_state, max_depth)
-- Risque d'overfitting sans régularisation
-
-**Forces des arbres de décision :**
-- Interprétabilité : visualisation claire de la logique de décision
-- Gestion naturelle des données catégorielles
-- Pas besoin de normalisation des features
-- Peuvent capturer des relations non-linéaires complexes (quand la taille n'est pas limitée)
-
-L'implémentation est modulaire et réutilisable pour les exercices suivants sur l'induction d'arbres de décision.
