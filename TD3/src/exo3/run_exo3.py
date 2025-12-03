@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 header = ["Instance", "a1", "a2", "a3", "Target Class"]
@@ -21,13 +22,16 @@ from collections import Counter
 from exo1.impurity_measures import entropy, gini, classificationError
 from exo2.helpers import dataset_impurity, attribute_multiway_split, impurity_of_counts
 
+
 def info_gain_categorical(dataset, attr_name):
     """
     Calculate information gain for a categorical attribute using entropy.
     """
     parent_entropy = dataset_impurity(dataset, entropy, class_attr="Target Class")
 
-    split_entropy, groups = attribute_multiway_split(dataset, attr_name, entropy, class_attr="Target Class")
+    split_entropy, groups = attribute_multiway_split(
+        dataset, attr_name, entropy, class_attr="Target Class"
+    )
 
     gain = parent_entropy - split_entropy
 
@@ -41,9 +45,10 @@ def info_gain_categorical(dataset, attr_name):
 
     return parent_entropy, split_entropy, gain, details
 
+
 def info_gain_continuous(dataset, attr_name):
     """
-    Calculate information gain for a continuous attribute by testing all thresholds.
+    Calculate information gain for a continuous attribute.
     """
     header, rows = dataset
     attr_idx = header.index(attr_name)
@@ -51,37 +56,51 @@ def info_gain_continuous(dataset, attr_name):
 
     parent_entropy = dataset_impurity(dataset, entropy, class_attr="Target Class")
 
+    # Sort by continuous attribute
     rows_sorted = sorted(rows, key=lambda r: r[attr_idx])
-    values = sorted({r[attr_idx] for r in rows_sorted})
-    thresholds = [(values[i] + values[i + 1]) / 2 for i in range(len(values) - 1)]
+    n_total = len(rows_sorted)
+
+    # Initialize class counts
+    total_counts = Counter(r[class_idx] for r in rows_sorted)
+    left_counts = Counter()
+    right_counts = total_counts.copy()
 
     results = []
 
-    for t in thresholds:
-        left = [r for r in rows_sorted if r[attr_idx] <= t]
-        right = [r for r in rows_sorted if r[attr_idx] > t]
+    for i in range(n_total - 1):
+        label = rows_sorted[i][class_idx]
+        left_counts[label] += 1
+        right_counts[label] -= 1
 
-        counts_left = Counter(r[class_idx] for r in left)
-        counts_right = Counter(r[class_idx] for r in right)
+        v_curr = rows_sorted[i][attr_idx]
+        v_next = rows_sorted[i + 1][attr_idx]
 
-        h_left = impurity_of_counts(counts_left, entropy)
-        h_right = impurity_of_counts(counts_right, entropy)
+        if v_curr == v_next:
+            continue
 
-        n_total = len(rows_sorted)
-        split_entropy = (len(left) / n_total) * h_left + (len(right) / n_total) * h_right
+        threshold = (v_curr + v_next) / 2.0
+
+        n_left = i + 1
+        n_right = n_total - n_left
+
+        H_left = impurity_of_counts(left_counts, entropy)
+        H_right = impurity_of_counts(right_counts, entropy)
+
+        split_entropy = (n_left / n_total) * H_left + (n_right / n_total) * H_right
         gain = parent_entropy - split_entropy
 
         results.append(
             {
-                "threshold": t,
+                "threshold": threshold,
                 "split_entropy": split_entropy,
                 "gain": gain,
-                "left_counts": counts_left,
-                "right_counts": counts_right,
+                "left_counts": left_counts.copy(),
+                "right_counts": right_counts.copy(),
             }
         )
 
     return parent_entropy, results
+
 
 def run_ex3():
     # (a)
@@ -93,7 +112,9 @@ def run_ex3():
     # (b)
     for attr in ["a1", "a2"]:
         print(f"3(b) Info gain for {attr}:")
-        parent_entropy, child_entropy, gain, details = info_gain_categorical(dataset, attr)
+        parent_entropy, child_entropy, gain, details = info_gain_categorical(
+            dataset, attr
+        )
         print(f"  entropy(dataset) = {parent_entropy:.3f}")
         for value, (c, h) in details.items():
             print(f"  {attr} = {value}: counts={c}, entropy = {h:.3f}")
@@ -146,8 +167,12 @@ def run_ex3():
     print()
 
     # (f) best split (a1 vs a2) by Gini index
-    gini_a1, _ = attribute_multiway_split(dataset, "a1", gini, class_attr="Target Class")
-    gini_a2, _ = attribute_multiway_split(dataset, "a2", gini, class_attr="Target Class")
+    gini_a1, _ = attribute_multiway_split(
+        dataset, "a1", gini, class_attr="Target Class"
+    )
+    gini_a2, _ = attribute_multiway_split(
+        dataset, "a2", gini, class_attr="Target Class"
+    )
     print("3(f) Best split (a1 vs a2) by Gini index:")
     print(f"  gini split(a1) = {gini_a1:.3f}")
     print(f"  gini split(a2) = {gini_a2:.3f}")
